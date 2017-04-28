@@ -21,5 +21,5 @@ It's a simple music player
 > - npm install
 > - npm run dev
 
-#### 致谢 **microzz**
+#### 致谢 [microzz](https://github.com/microzz/vue-music-player)
 
