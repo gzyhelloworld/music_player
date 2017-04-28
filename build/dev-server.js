@@ -23,9 +23,7 @@ var proxyTable = config.dev.proxyTable
 
 var app = express()
 // var musicData = data.musicData;
-// var xml2js = require('xml2js');
-// var parser = new xml2js.Parser();
-// var iconv = require('iconv-lite');
+var iconv = require('iconv-lite');
 var apiRoutes = express.Router();
 
 apiRoutes.get('/musictxt/:num', (req, res) => {
@@ -36,12 +34,10 @@ apiRoutes.get('/musictxt/:num', (req, res) => {
       let url = encodeURI('http://music.qq.com/miniportal/static/lyric/'+(n%100)+'/'+n+'.xml');
       http.get(url, response => {
         response.on('data', data => {
+          data = iconv.decode(new Buffer(data), 'GBK');
           searchResult += data; 
         });
         response.on('end', () => {
-          searchResult = iconv.decode(new Buffer(searchResult), 'GBK');
-          searchResult = iconv.decode(new Buffer(searchResult), 'GB2312');
-          console.log(searchResult);
         searchResult =  JSON.stringify(searchResult);
           resolve(searchResult);
         })
