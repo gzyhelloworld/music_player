@@ -20,6 +20,10 @@ const store = new Vuex.Store({
   		index:0,
   		endtime:'',
   		currentTime:'',
+      id:0,
+      lyric:[],
+      lyrictime:[],
+      thislyric:0,
   	},
   	music:[],
   	dom:{},
@@ -28,6 +32,7 @@ const store = new Vuex.Store({
   	isplay:true,
     active:true,
     errshow:false,
+    musictxt:"",
   },
   mutations: {
   	togglemusic(state,index,flag){
@@ -37,9 +42,30 @@ const store = new Vuex.Store({
   		state.audio.musicname = state.music[index].musicname;
   		state.audio.imgsrc = state.music[index].musicImgSrc;
   		state.audio.src = state.music[index].src;
+      Vue.axios.get('api/musictxt/'+state.music[index].id).then(res =>{
+      let list = res.data,list2=[];
+      if(list.indexOf('CDATA[')>=0){
+      list = list.split('CDATA[')[1].split(']]><')[0].split('\n');
+      for(let i=5;i<list.length;i++){
+        let a = list[i];
+        a = a.replace('[','').replace(']',':').split(':');
+        list[i] = a[0]*60 + parseFloat(a[1])+','+a[2];
+      }
+      list.splice(0,5);
+      $(list).map( (a,b) =>{
+        list2[a] = b.split(',')[0]*1;
+        list[a]=b.split(',')[1];})
+        state.audio.lyrictime = list2;
+        state.audio.lyric = list;}else{
+          state.audio.lyric = ['没有找到歌词~']
+          state.audio.lyrictime = [];
+        }         
+        })
+      state.audio.thislyric = 0;
   		state.audio.index = index;
   		state.audio.currentTime = 0;
   		state.dom.audio.src = state.audio.src;
+
   		state.dom.audio.oncanplaythrough = function () {
         state.audio.endtime = state.dom.audio.duration;
     	}
@@ -69,6 +95,10 @@ const store = new Vuex.Store({
   },
   seterrshow(state,flag){
     state.errshow = flag;
+  },
+  setmusictxt(state,txt){
+    console.log(txt+'dasdadas')
+    state.musictxt = txt;
   }
   },
   actions:{

@@ -37,7 +37,7 @@ export default {
       <tr @mouseover="isshow=true" @mouseout="isshow=false" @click="ischeck=!ischeck">
         <td class="col-xs-2"><div class="checkboxs"><input type="checkbox" name="" :checked="check"><ins ></ins></div></td>
         <td class="col-xs-5">{{list.musicname}}</td>
-        <td class="col-xs-1"><span><i  v-show="isshow" @click="play(index)"></i></span></td>
+        <td class="col-xs-1"><span><i  v-show="isshow" @click.stop="play(index)"></i></span></td>
         <td class="col-xs-3">{{list.name}}</td>
         <td class="col-xs-1"><span class="glyphicon glyphicon-trash" @click="delthis(index)"></span></td>
       </tr>`,

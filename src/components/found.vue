@@ -1,7 +1,7 @@
 <template>
   <div class="found">
 		<div class="input-group col-xs-8 col-md-offset-1" style="margin-top:0px positon:relative">  
-		       <input type="text" class="form-control"  id="keyword">  
+		       <input type="text" class="form-control"  id="keyword" placeholder="歌曲名或歌手">  
 		            <span class="input-group-btn">  
 		               <button class="btn btn-info btn-search" @click="found">搜索</button>  
 		            </span>  
@@ -87,6 +87,7 @@ export default {
           "name": this.item.fsinger,
           "musicname": this.item.fsong,
           "src":'http://ws.stream.qqmusic.qq.com/'+this.item.num+'.m4a?fromtag=46',
+          "id":this.item.num,
           "musicImgSrc": this.item.f            
           });
           this.$store.state.dom.audio.play();

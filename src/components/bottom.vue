@@ -79,6 +79,17 @@ export default {
   methods:{
     timeup:function () {
      this.$store.commit('setcurrentTime',this.audio.currentTime);
+     if(this.faudio.lyrictime.length>0){
+      let tc = this.faudio.thislyric;
+      let lt = this.faudio.lyrictime;
+      while(lt[tc+1]<this.audio.currentTime && tc+1<lt.length){
+        tc++;
+      }
+      while(lt[tc]>this.audio.currentTime && tc>0){
+        tc--
+      }
+      this.$store.state.audio.thislyric = tc;
+     }
     },
     play:function () {       
       this.$store.commit('setismusic');

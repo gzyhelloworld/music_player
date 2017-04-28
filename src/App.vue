@@ -14,6 +14,16 @@
     </ul>
   <router-view></router-view>
   </div>
+  <div class="col-xs-4 col-xs-offset-2">
+    <div class="col-xs-9">
+      <img :src="faudio.imgsrc" class="img-circle img-responsive">
+      <div class="listbox">
+      <div class="list-group lyriclist" :style="{top: -1*faudio.thislyric/faudio.thislyric*height(faudio.thislyric) +'px'}">
+        <listitem v-for="(item,index) in faudio.lyric" :item="item" :key="item.key" :class="{act: (index == faudio.thislyric)}"></listitem>
+      </div>
+      </div>
+    </div>
+  </div>
   </div>
   <div class="err" v-show="errshow"></div>
   <div class="panel panel-danger errbox" v-show="errshow">
@@ -22,7 +32,7 @@
       <span class="glyphicon glyphicon-remove errspan" @click="hidden"></span>
     </div>
     <div class="panel-body">
-      出现一些错误，请检查网络问题！ 
+      出现一些错误，请检查网络！若网络没问题,播放失败,可能接口的原因,请稍后再试 
     </div>
   </div>
   <bottom></bottom>  
@@ -38,7 +48,11 @@ export default {
   name: 'app',
   components: {
     top,
-    bottom
+    bottom,
+    listitem:{
+      template:`<li class="list-group-item">{{item}}</li>`,
+      props:['item']
+    }
   },
   beforeCreate(){
     localStorage.music = localStorage.music?localStorage.music:'[]';
@@ -53,7 +67,6 @@ export default {
     this.$store.commit('togglemusic', 0);
     this.$store.state.dom.audio.addEventListener('ended', () => { this.$store.commit('togglemusic', this.$store.state.audio.index+1);this.$store.state.dom.audio.autoplay = 'autoplay';});
     this.$store.state.dom.audio.addEventListener('error', () => {this.$store.commit('seterrshow',true);this.$store.commit('setisplay',true);});
-    // this.axios.get('api/musictxt/'+101369814).then(res =>{ console.log(res);console.log('a')});
   },
   computed:{
     active(){
@@ -61,6 +74,9 @@ export default {
     },
     errshow(){
       return this.$store.state.errshow;
+    },
+    faudio(){
+      return this.$store.state.audio;
     }
   },
   methods:{
@@ -69,9 +85,15 @@ export default {
     },
     hidden(){
       this.$store.commit('seterrshow',false);
+    },
+    height(index){
+      let height=0;
+      for(let i=0;i<index;i++){
+        height += $('.list-group-item')[i].offsetHeight;
+      }
+      return height;
     }
   },
-
 }
 </script>
 
@@ -122,5 +144,24 @@ export default {
   opacity: .2;
   background-color:#f1f1f1;
   z-index:20; 
+}
+.lyriclist{ 
+  position: absolute;
+  transition: all .5s;
+  width: 100%; 
+}
+.list-group-item{
+  border:none;
+  margin-bottom: 0;
+  font-family: poppin,'PingFang SC',Tahoma,Arial,\5FAE\8F6F\96C5\9ED1,sans-serif;
+}
+.listbox{
+  margin-top: 30px;
+  height: 200px;
+  position: relative;
+  overflow: hidden;
+}
+.lyriclist .act{
+  color: #5151f5;
 }
 </style>
